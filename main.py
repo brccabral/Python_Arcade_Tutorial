@@ -23,6 +23,11 @@ class MyGameWindow(arcade.Window):
         self.circle_x += self.x_speed * delta_time
         self.circle_y += self.y_speed * delta_time
 
+        if self.circle_x > self.width or self.circle_x < 0:
+            self.x_speed *= -1
+        if self.circle_y > self.height or self.circle_y < 0:
+            self.y_speed *= -1
+
 
 MyGameWindow(1280, 720, "My Game Window")
 arcade.run()
