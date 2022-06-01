@@ -14,6 +14,10 @@ class MyGameWindow(arcade.Window):
         self.x_speed = 300
         self.y_speed = 150
 
+        self.player_x = 100
+        self.player_y = 200
+        self.player_speed = 250
+
     def on_draw(self):
         arcade.start_render()
         arcade.draw_circle_filled(
@@ -22,6 +26,9 @@ class MyGameWindow(arcade.Window):
             self.circle_r,
             arcade.color.GREEN,
             num_segments=10,
+        )
+        arcade.draw_circle_outline(
+            self.player_x, self.player_y, 50, arcade.color.BLUE, 2, num_segments=20
         )
 
     def on_update(self, delta_time):
@@ -38,6 +45,12 @@ class MyGameWindow(arcade.Window):
             or self.circle_y < 0 + self.circle_r
         ):
             self.y_speed *= -1
+
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.RIGHT:
+            self.player_x += 100
+        if symbol == arcade.key.LEFT:
+            self.player_x -= 100
 
 
 MyGameWindow(1280, 720, "My Game Window")
