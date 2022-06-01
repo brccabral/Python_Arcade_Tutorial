@@ -1,4 +1,5 @@
 import arcade
+from math import sqrt
 
 
 class MyGameWindow(arcade.Window):
@@ -16,6 +17,8 @@ class MyGameWindow(arcade.Window):
 
         self.yellow_x = 500
         self.yellow_y = 500
+        self.velocity_x = 0
+        self.velocity_y = 0
 
     def on_draw(self):
         arcade.start_render()
@@ -37,6 +40,9 @@ class MyGameWindow(arcade.Window):
             self.yellow_x, self.yellow_y, 50, arcade.color.YELLOW, 2, num_segments=20
         )
 
+    def on_update(self, delta_time: float):
+        self.move_yellow_circle()
+
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int):
         if button == arcade.MOUSE_BUTTON_LEFT:
             self.green_x = x
@@ -46,8 +52,17 @@ class MyGameWindow(arcade.Window):
             self.blue_y = y
 
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int):
-        self.yellow_x = x
-        self.yellow_y = y
+        self.velocity_x = x
+        self.velocity_y = y
+
+    def move_yellow_circle(self):
+        x_distance = self.velocity_x - self.yellow_x
+        y_distance = self.velocity_y - self.yellow_y
+        distance = sqrt(x_distance * x_distance + y_distance * y_distance)
+
+        if distance > 1:
+            self.yellow_x += x_distance * 0.1
+            self.yellow_y += y_distance * 0.1
 
 
 MyGameWindow(1280, 720, "My Game Window")
