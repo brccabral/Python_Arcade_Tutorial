@@ -1,5 +1,4 @@
 import arcade
-from math import sqrt
 
 
 class MyGameWindow(arcade.Window):
@@ -58,7 +57,9 @@ class MyGameWindow(arcade.Window):
     def move_yellow_circle(self):
         x_distance = self.velocity_x - self.yellow_x
         y_distance = self.velocity_y - self.yellow_y
-        distance = sqrt(x_distance * x_distance + y_distance * y_distance)
+        # distance = sqrt(x_distance * x_distance + y_distance * y_distance)
+        # pow(a, 0.5) is more efficient than sqrt()
+        distance = pow(x_distance * x_distance + y_distance * y_distance, 0.5)
 
         if distance > 1:
             self.yellow_x += x_distance * 0.1
