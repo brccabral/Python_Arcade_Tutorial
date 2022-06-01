@@ -17,6 +17,10 @@ class MyGameWindow(arcade.Window):
         self.player_x = 100
         self.player_y = 200
         self.player_speed = 250
+        self.right = False
+        self.left = False
+        self.up = False
+        self.down = False
 
     def on_draw(self):
         arcade.start_render()
@@ -46,11 +50,34 @@ class MyGameWindow(arcade.Window):
         ):
             self.y_speed *= -1
 
+        if self.right:
+            self.player_x += self.player_speed * delta_time
+        if self.left:
+            self.player_x -= self.player_speed * delta_time
+        if self.up:
+            self.player_y += self.player_speed * delta_time
+        if self.down:
+            self.player_y -= self.player_speed * delta_time
+
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.RIGHT:
-            self.player_x += 100
+            self.right = True
         if symbol == arcade.key.LEFT:
-            self.player_x -= 100
+            self.left = True
+        if symbol == arcade.key.UP:
+            self.up = True
+        if symbol == arcade.key.DOWN:
+            self.down = True
+
+    def on_key_release(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.RIGHT:
+            self.right = False
+        if symbol == arcade.key.LEFT:
+            self.left = False
+        if symbol == arcade.key.UP:
+            self.up = False
+        if symbol == arcade.key.DOWN:
+            self.down = False
 
 
 MyGameWindow(1280, 720, "My Game Window")
