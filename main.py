@@ -59,7 +59,9 @@ class MyGameWindow(arcade.Window):
         y_distance = self.velocity_y - self.yellow_y
         # distance = sqrt(x_distance * x_distance + y_distance * y_distance)
         # pow(a, 0.5) is more efficient than sqrt()
-        distance = pow(x_distance * x_distance + y_distance * y_distance, 0.5)
+        # distance = pow(x_distance * x_distance + y_distance * y_distance, 0.5)
+        # a**.5 is even faster
+        distance = (x_distance * x_distance + y_distance * y_distance)**.5
 
         if distance > 1:
             self.yellow_x += x_distance * 0.1
