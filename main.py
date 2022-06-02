@@ -15,6 +15,13 @@ class MyGameWindow(arcade.Window):
         self.sprite1 = arcade.Sprite(
             "ship1a.png", center_x=self.player_x, center_y=self.player_y
         )
+        self.sprite2 = arcade.Sprite("smile.png", center_x=200, center_y=200)
+        self.sprite3 = arcade.Sprite("ufo.png", center_x=300, center_y=300)
+
+        self.sprite_list = arcade.SpriteList()
+        self.sprite_list.append(self.sprite1)
+        self.sprite_list.append(self.sprite2)
+        self.sprite_list.append(self.sprite3)
 
         self.right = False
         self.left = False
@@ -23,7 +30,10 @@ class MyGameWindow(arcade.Window):
 
     def on_draw(self):
         arcade.start_render()
-        self.sprite1.draw()
+        # self.sprite1.draw()
+        # self.sprite2.draw()
+        # self.sprite3.draw()
+        self.sprite_list.draw()
 
     def on_update(self, delta_time: float):
         if self.right:
@@ -38,7 +48,8 @@ class MyGameWindow(arcade.Window):
             self.sprite1.strafe(-0.1)
 
         # when using strafe, must call update
-        self.sprite1.update()
+        # self.sprite1.update()
+        self.sprite_list.update()
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.RIGHT:
