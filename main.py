@@ -12,7 +12,9 @@ class MyGameWindow(arcade.Window):
         self.player_y = 200
         self.player_speed = 250
 
-        self.sprite1 = arcade.Sprite("ship1a.png", center_x=self.player_x, center_y=self.player_y)
+        self.sprite1 = arcade.Sprite(
+            "ship1a.png", center_x=self.player_x, center_y=self.player_y
+        )
 
         self.right = False
         self.left = False
@@ -25,15 +27,18 @@ class MyGameWindow(arcade.Window):
 
     def on_update(self, delta_time: float):
         if self.right:
-            self.player_x += self.player_speed * delta_time
+            self.sprite1.turn_right(2)
         if self.left:
-            self.player_x -= self.player_speed * delta_time
+            self.sprite1.turn_left(2)
+        # strafe applies a force on the player direction
+        #  player doesn't stop when the key is released
         if self.up:
-            self.player_y += self.player_speed * delta_time
+            self.sprite1.strafe(0.1)
         if self.down:
-            self.player_y -= self.player_speed * delta_time
+            self.sprite1.strafe(-0.1)
 
-        self.sprite1.set_position(self.player_x, self.player_y)
+        # when using strafe, must call update
+        self.sprite1.update()
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.RIGHT:
