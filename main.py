@@ -12,7 +12,7 @@ class MyGameWindow(arcade.Window):
         self.player_y = 200
         self.player_speed = 250
 
-        self.sprite1 = arcade.Sprite("ship1a.png", center_x=100, center_y=100)
+        self.sprite1 = arcade.Sprite("ship1a.png", center_x=self.player_x, center_y=self.player_y)
 
         self.right = False
         self.left = False
@@ -32,6 +32,8 @@ class MyGameWindow(arcade.Window):
             self.player_y += self.player_speed * delta_time
         if self.down:
             self.player_y -= self.player_speed * delta_time
+
+        self.sprite1.set_position(self.player_x, self.player_y)
 
     def on_key_press(self, symbol: int, modifiers: int):
         if symbol == arcade.key.RIGHT:
