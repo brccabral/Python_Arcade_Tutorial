@@ -8,51 +8,54 @@ class MyGameWindow(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
-        self.player_x = 100
-        self.player_y = 200
-        self.player_speed = 250
-
-        self.sprite1 = arcade.Sprite(
-            "ship1a.png", center_x=self.player_x, center_y=self.player_y
-        )
-        self.sprite2 = arcade.Sprite("smile.png", center_x=200, center_y=200)
-        self.sprite3 = arcade.Sprite("ufo.png", center_x=300, center_y=300)
-
-        self.sprite_list = arcade.SpriteList()
-        self.sprite_list.append(self.sprite1)
-        self.sprite_list.append(self.sprite2)
-        self.sprite_list.append(self.sprite3)
+        self.player_list = None
+        self.player = None
 
         self.right = False
         self.left = False
         self.up = False
         self.down = False
 
+        self.setup()
+
+    def setup(self):
+        self.player_list = arcade.SpriteList()
+        self.player = arcade.AnimatedWalkingSprite()
+
+        self.player.stand_right_textures = []
+        self.player.stand_right_textures.append(arcade.load_texture("Run (1).png"))
+
+        self.player.stand_left_textures = []
+        self.player.stand_left_textures.append(
+            arcade.load_texture("Run (1).png", mirrored=True)
+        )
+
+        self.player.walk_right_textures = []
+        for i in range(1, 9):
+            self.player.walk_right_textures.append(
+                arcade.load_texture(f"Run ({i}).png")
+            )
+
+        self.player.walk_left_textures = []
+        for i in range(1, 9):
+            self.player.walk_left_textures.append(
+                arcade.load_texture(f"Run ({i}).png", mirrored=True)
+            )
+
+        self.player.center_x = self.width // 2
+        self.player.center_y = self.height // 2
+
+        self.player_list.append(self.player)
+
     def on_draw(self):
         arcade.start_render()
-        # self.sprite1.draw()
-        # self.sprite2.draw()
-        # self.sprite3.draw()
-        self.sprite_list.draw()
+        self.player_list.draw()
 
     def on_update(self, delta_time: float):
-        if self.right:
-            self.sprite1.turn_right(2)
-        if self.left:
-            self.sprite1.turn_left(2)
-        # strafe applies a force on the player direction
-        #  player doesn't stop when the key is released
-        if self.up:
-            self.sprite1.strafe(0.1)
-        if self.down:
-            self.sprite1.strafe(-0.1)
-
-        # when using strafe, must call update
-        # self.sprite1.update()
-        self.sprite_list.update()
+        self.player_list.update_animation()
 
     def on_key_press(self, symbol: int, modifiers: int):
-        if symbol == arcade.key.RIGHT:
+        if symbol == arcade.key.left:
             self.right = True
         if symbol == arcade.key.LEFT:
             self.left = True
