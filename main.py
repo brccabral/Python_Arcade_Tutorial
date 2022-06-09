@@ -13,10 +13,12 @@ class MyGameWindow(arcade.Window):
         self.setup()
 
     def setup(self):
-        my_map = arcade.load_tilemap()
+        my_map = arcade.load_tilemap("my-map.json")
+        self.scene = arcade.Scene.from_tilemap(my_map)
 
     def on_draw(self):
         arcade.start_render()
+        self.scene.draw()
 
     def on_update(self, delta_time: float):
         pass
