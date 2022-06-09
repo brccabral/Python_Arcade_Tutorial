@@ -1,21 +1,22 @@
+import pymunk
 import arcade
+from math import degrees
 
-# physics
-MOVEMENT_SPEED = 8
-JUMP_SPEED = 28
-GRAVITY = 1.1
+space = pymunk.Space()
+space.gravity = 0, -1000
 
-# map
-TILE_WIDTH = 64
-HALF_TILE_WIDTH = TILE_WIDTH // 2
-MAP_WIDTH = 60 * TILE_WIDTH
-MAP_HEIGHT = 6 * TILE_WIDTH
-MAX_PLAYER_POS_X = MAP_WIDTH - TILE_WIDTH // 2
+mass = 1
+radius = 40
 
-# window
-WINDOW_WIDTH = 1280
-WINDOW_HEIGHT = 896
-WINDOW_HALF_WIDTH = WINDOW_WIDTH // 2
+segment_shape1 = pymunk.Segment(space.static_body, (500, 400), (1300, 440), 2)
+segment_shape1.elasticity = 0.8
+segment_shape1.friction = 1.0
+space.add(segment_shape1)
+
+segment_shape2 = pymunk.Segment(space.static_body, (100, 160), (900, 100), 2)
+segment_shape2.elasticity = 0.8
+segment_shape2.friction = 1.0
+space.add(segment_shape2)
 
 
 class MyGameWindow(arcade.Window):
@@ -25,108 +26,44 @@ class MyGameWindow(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
-        self.player_list = arcade.SpriteList()
-        self.player_sprite = arcade.Sprite("character.png")
-        self.player_sprite.center_x = TILE_WIDTH // 2
-        self.player_sprite.center_y = TILE_WIDTH * 2
-        self.player_list.append(self.player_sprite)
-        self.physics_engine = None
-        self.camera = arcade.Camera(self.width, self.height)
-        # camera to draw HUD
-        self.gui_camera = arcade.Camera(self.width, self.height)
-
-        self.collected_coins = 0
-
-        self.setup()
-
-    def setup(self):
-        my_map = arcade.TileMap("my-map.tmx")
-        self.scene = arcade.Scene.from_tilemap(my_map)
-        self.scene.add_sprite("Player", self.player_sprite)
-
-        self.physics_engine = arcade.PhysicsEnginePlatformer(
-            self.player_sprite, self.scene["ground"], gravity_constant=GRAVITY
-        )
+        self.sprites = arcade.SpriteList()
 
     def on_draw(self):
-        self.clear()
+        arcade.start_render()
+        arcade.draw_lines([segment_shape1.a, segment_shape1.b], arcade.color.RED, 4)
+        arcade.draw_lines([segment_shape2.a, segment_shape2.b], arcade.color.RED, 4)
 
-        # activate camera to draw scene on it
-        self.camera.use()
+        self.sprites.draw()
 
-        self.scene.draw()
+    def on_update(self, delta_time):
+        space.step(delta_time)
+        for index, sprite in enumerate(self.sprites):
+            sprite.angle = degrees(space.bodies[index].angle)
+            sprite.set_position(
+                space.bodies[index].position.x, space.bodies[index].position.y
+            )
+            for body in space.bodies:
+                if body.position.y < -100:
+                    self.sprites.remove(sprite)
+                    space.remove(body)
 
-        # after gui_camera.use(), arcade will draw anything on this camera, not in the other camera
-        #  otherwise the text will stay at the map start
-        self.gui_camera.use()
-        arcade.draw_text(
-            f"Coins: {self.collected_coins}",
-            10,
-            WINDOW_HEIGHT - 50,
-            arcade.color.GOLD,
-            font_size=30,
-        )
-
-    def clamp(self, value, low, high):
-        return max(min(value, high), low)
-
-    def camera_position(self):
-        # constrain player inside map boundaries
-        self.player_sprite.center_x = self.clamp(
-            self.player_sprite.center_x, HALF_TILE_WIDTH, MAX_PLAYER_POS_X
-        )
-
-        screen_center_x = self.player_sprite.center_x - (self.camera.viewport_width / 2)
-        screen_center_y = self.player_sprite.center_y - (
-            self.camera.viewport_height / 2
-        )
-        if screen_center_x < 0:
-            screen_center_x = 0
-        if screen_center_y < 0:
-            screen_center_y = 0
-
-        if MAP_WIDTH - self.player_sprite.center_x < self.camera.viewport_width / 2:
-            screen_center_x = MAP_WIDTH - self.camera.viewport_width
-
-        player_centered = screen_center_x, screen_center_y
-
-        self.camera.move_to(player_centered)
-
-    def on_update(self, delta_time: float):
-        self.physics_engine.update()
-        self.camera_position()
-
-        # See if we hit any coins
-        coin_hit_list = arcade.check_for_collision_with_list(
-            self.player_sprite, self.scene["coins"]
-        )
-
-        # Loop through each coin we hit (if any) and remove it
-        for coin in coin_hit_list:
-            # Remove the coin
-            coin.remove_from_sprite_lists()
-            # Add one to the score
-            self.collected_coins += 1
-
-    def on_key_press(self, key, modifiers):
-        """Called whenever a key is pressed."""
-
-        if key == arcade.key.UP or key == arcade.key.W:
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = JUMP_SPEED
-        elif key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x -= MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x += MOVEMENT_SPEED
-
-    def on_key_release(self, key, modifiers):
-        """Called when the user releases a key."""
-
-        if key == arcade.key.LEFT or key == arcade.key.A:
-            self.player_sprite.change_x += MOVEMENT_SPEED
-        elif key == arcade.key.RIGHT or key == arcade.key.D:
-            self.player_sprite.change_x -= MOVEMENT_SPEED
+    def on_mouse_press(self, x, y, button, modifiers):
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            circle_moment = pymunk.moment_for_circle(mass, 0, radius)
+            circle_body = pymunk.Body(mass, circle_moment)
+            circle_body.position = x, y
+            circle_shape = pymunk.Circle(circle_body, radius)
+            circle_shape.elasticity = 0.8
+            circle_shape.friction = 1.0
+            space.add(circle_body, circle_shape)
+            self.sprites.append(
+                arcade.Sprite(
+                    "smile.png",
+                    center_x=circle_body.position.x,
+                    center_y=circle_body.position.y,
+                )
+            )
 
 
-MyGameWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "My Game Window")
+MyGameWindow(1280, 720, "My game window")
 arcade.run()
