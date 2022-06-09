@@ -7,3 +7,6 @@ Space ship from "Branden Hughes" https://opengameart.org/content/little-blue-spa
 smile.png and ufo.png I draw myself on KolourPaint  
 
 "Red Hat Boy" was downloaded from https://www.gameart2d.com/red-hat-boy-free-sprites.html  
+
+monster.png and machine.png are from https://www.spriters-resource.com/fullview/103665/  
+
