@@ -1,5 +1,10 @@
 import arcade
 
+# window
+WINDOW_WIDTH = 1280
+WINDOW_HEIGHT = 896
+WINDOW_HALF_WIDTH = WINDOW_WIDTH // 2
+
 
 class MyGameWindow(arcade.Window):
     def __init__(self, width, height, title):
@@ -8,12 +13,10 @@ class MyGameWindow(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
-        self.ground_list = None
-
         self.setup()
 
     def setup(self):
-        my_map = arcade.load_tilemap("my-map.json")
+        my_map = arcade.TileMap("my-map.tmx")
         self.scene = arcade.Scene.from_tilemap(my_map)
 
     def on_draw(self):
@@ -24,5 +27,5 @@ class MyGameWindow(arcade.Window):
         pass
 
 
-MyGameWindow(1280, 720, "My Game Window")
+MyGameWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "My Game Window")
 arcade.run()
