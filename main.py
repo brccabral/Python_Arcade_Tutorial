@@ -13,6 +13,8 @@ class MyGameWindow(arcade.Window):
 
         arcade.set_background_color(arcade.color.BLACK)
 
+        self.collected_coins = 0
+
         self.setup()
 
     def setup(self):
@@ -22,6 +24,13 @@ class MyGameWindow(arcade.Window):
     def on_draw(self):
         arcade.start_render()
         self.scene.draw()
+        arcade.draw_text(
+            f"Coins: {self.collected_coins}",
+            arcade.get_viewport()[0] + 10,
+            arcade.get_viewport()[2] + WINDOW_HEIGHT - 50,
+            arcade.color.GOLD,
+            font_size=30,
+        )
 
     def on_update(self, delta_time: float):
         pass
