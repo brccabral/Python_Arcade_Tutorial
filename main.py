@@ -96,6 +96,18 @@ class MyGameWindow(arcade.Window):
         self.physics_engine.update()
         self.camera_position()
 
+        # See if we hit any coins
+        coin_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.scene["coins"]
+        )
+
+        # Loop through each coin we hit (if any) and remove it
+        for coin in coin_hit_list:
+            # Remove the coin
+            coin.remove_from_sprite_lists()
+            # Add one to the score
+            self.collected_coins += 1
+
     def on_key_press(self, key, modifiers):
         """Called whenever a key is pressed."""
 
