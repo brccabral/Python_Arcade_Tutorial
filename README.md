@@ -10,3 +10,5 @@ smile.png and ufo.png I draw myself on KolourPaint
 
 monster.png and machine.png are from https://www.spriters-resource.com/fullview/103665/  
 
+center.png, coin.png, crate.png, left.png, mid.png, right.png were modified from https://github.com/clear-code-projects/2D-Mario-style-platformer  
+
