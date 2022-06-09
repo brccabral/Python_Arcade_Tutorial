@@ -10,7 +10,7 @@ class MyGameWindow(arcade.Window):
 
         self.player_list = None
         self.player = None
-        self.player_animation_speed = 50
+        self.player_animation_speed = 120
 
         self.setup()
 
@@ -18,13 +18,16 @@ class MyGameWindow(arcade.Window):
         self.player_list = arcade.SpriteList()
         self.player = arcade.AnimatedTimeBasedSprite()
 
-        for i in range(8):
-            texture = arcade.load_texture(
-                "machine.png", x=i * 128, y=0, width=128, height=128
-            )
-            self.player.append_texture(texture)
-            a = arcade.AnimationKeyframe(i, self.player_animation_speed, texture)
-            self.player.frames.append(a)
+        for r in range(4):
+            for c in range(2):
+                texture = arcade.load_texture(
+                    "monster.png", x=c * 68, y=r * 64, width=68, height=64
+                )
+                self.player.append_texture(texture)
+                a = arcade.AnimationKeyframe(
+                    r * c, self.player_animation_speed, texture
+                )
+                self.player.frames.append(a)
 
         self.player.center_x = self.width // 2
         self.player.center_y = self.height // 2
