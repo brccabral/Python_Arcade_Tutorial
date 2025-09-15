@@ -24,12 +24,12 @@ class MyGameWindow(arcade.Window):
         super().__init__(width, height, title)
         self.set_location(400, 200)
 
-        arcade.set_background_color(arcade.color.BLACK)
+        self.background_color = arcade.color.BLACK
 
         self.sprites = arcade.SpriteList()
 
     def on_draw(self):
-        arcade.start_render()
+        self.clear()
         arcade.draw_lines([segment_shape1.a, segment_shape1.b], arcade.color.RED, 4)
         arcade.draw_lines([segment_shape2.a, segment_shape2.b], arcade.color.RED, 4)
 
